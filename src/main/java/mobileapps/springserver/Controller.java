@@ -11,18 +11,16 @@ import java.util.Collection;
 public class Controller {
 
     private final GameRepository repository;
-    private final SocketController controller;
 
-    public Controller(GameRepository repository, SocketController controller) {
+    public Controller(GameRepository repository) {
         this.repository = repository;
-        this.controller = controller;
     }
 
 
     @GetMapping("/games")
     Iterable<Game> all() {
         Iterable<Game> all = repository.findAll();
-        System.out.println("Retrieving " + ((Collection<?>) all).size() + "items");
+        System.out.println("Retrieving " + ((Collection<?>) all).size() + " items");
         return all;
     }
 
@@ -31,11 +29,6 @@ public class Controller {
     ResponseEntity<?> add(@RequestBody Game game) {
         repository.save(game);
         System.out.println("Added - " + game);
-        try {
-            System.out.println("WebSocket sending - " + controller.send(game));
-        } catch (Exception e) {
-            System.out.println(e.getLocalizedMessage());
-        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
